@@ -94,6 +94,8 @@ public class ServiceImpl implements UserService{
 		try {
 			userProfile.setName(userDto.getName());
 			userProfile.setEmail(userDto.getEmail());
+			userProfile.setPublicProfile(userDto.isPublicProfile());
+			userProfile.setNotificationEnabled(userDto.isNotificationEnabled());
 			Map<String, String> map = null;
 			try {
 			map = PasswordGenerationUtil.maskPassword(userDto.getPassword());
@@ -152,8 +154,13 @@ public class ServiceImpl implements UserService{
 	public Response retrieveByEmailAndPassword(String email, String password) {
 			Response response=new Response();
 			UserProfile userProfile=userRepository.findByEmail(email);
-			if(userProfile.getPassword().equals(password)) {
-				response=new Response("success",200,userProfile);
+			try {
+				if(PasswordGenerationUtil.checkPassword(password, userProfile.getSalt(), userProfile.getPassword())) {
+					response=new Response("success",200,userProfile);
+				}
+			} catch (NoSuchAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			return response;
 	}

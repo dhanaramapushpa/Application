@@ -79,5 +79,14 @@ public class UserDto {
 	public void setNotificationEnabled(boolean isNotificationEnabled) {
 		this.isNotificationEnabled = isNotificationEnabled;
 	}
+
+	@Override
+	public String toString() {
+		return "UserDto [userId=" + userId + ", name=" + name + ", email=" + email + ", password=" + password
+				+ ", isPublicProfile=" + isPublicProfile + ", isNotificationEnabled=" + isNotificationEnabled
+				+ ", userAddress=" + userAddress + "]";
+	}
+	
+	
 	
 }

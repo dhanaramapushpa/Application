@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.SuggestionDto;
+import com.example.demo.dto.UserDto;
 import com.example.demo.model.Preference;
 import com.example.demo.model.UserAddress;
 import com.example.demo.model.UserPreference;
@@ -67,17 +68,34 @@ public class SuggestServiceImpl implements SuggestService{
 		List<UserProfile> suggestedUserProfiles=new ArrayList<>();
 		List<UserPreference> userPreferences=userPreferenceRepository.findByUserProfile(userProfile);
 		List<UserPreference> existingUserPreferences=userPreferenceRepository.findAll();
+		System.out.println("existingUserPreferences" +existingUserPreferences.size() +"userPreferences :" +userPreferences.size());
 		for(UserPreference u:existingUserPreferences) {
-			if(userPreferences.equals(u.getPreference())) {
-				suggestedUserProfiles.add(u.getUserProfile());
-			}
+			for (UserPreference userPreference : userPreferences) {
+				if (!userPreference.getUserProfile().equals(u.getUserProfile()) && userPreference.getPreference().equals(u.getPreference())) {
+					if (!suggestedUserProfiles.contains(u.getUserProfile())) {
+						suggestedUserProfiles.add(u.getUserProfile());
+					}
+				}
+			} 
 		}
-		
+		System.out.println(">>>"+suggestedUserProfiles.size());
 		for(UserProfile u:suggestedUserProfiles) {
-			if(!userProfile.equals(u)) {
-				response=new Response("success",500,u);
+			if(userProfile.equals(u)) {
+				suggestedUserProfiles.remove(u);
 			}
 		}
+		response=new Response("success",500,toUserDto(suggestedUserProfiles));
 		return response;
 	}	
+	
+	public List<UserDto> toUserDto(List<UserProfile> suggestedUserProfiles) {
+		 List<UserDto> userDtos = new ArrayList<>();
+		for (UserProfile user: suggestedUserProfiles) {
+			UserDto dto = new UserDto();
+			dto.setEmail(user.getEmail());
+			dto.setName(user.getName());
+			userDtos.add(dto);
+		}
+		return userDtos;
+	}
 }

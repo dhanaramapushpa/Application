@@ -59,7 +59,7 @@ public class UserValidator implements validator{
 			return new Response("email id already exists",500,"Failure");
 		}
 
-		if(dto.getName().length()<=4||dto.getName().length()>25) {
+		if(dto.getName().length()<4||dto.getName().length()>25) {
 			return new Response("name should contain atleast 4 characters and maximum 25 characters",500,"Failure");
 		}
 		

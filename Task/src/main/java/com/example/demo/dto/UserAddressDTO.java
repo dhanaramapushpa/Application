@@ -13,7 +13,7 @@ public class UserAddressDTO {
 	
 	private UserProfile userProfile;
 
-	private Boolean isPrimary;
+	private Boolean isPrimary = Boolean.FALSE;
 	
 	public Boolean getIsPrimary() {
 		return isPrimary;

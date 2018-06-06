@@ -24,14 +24,17 @@ public class PreferenceImpl implements PreferenceService{
 			
 			Preference preference1 = new Preference();
 			preference1.setCategory("Cinema");
+			preference1.setStatus(Boolean.TRUE);
 			preference1.setTypeOfPref("Drama");
 			
 			Preference preference2 = new Preference();
 			preference2.setCategory("Games");
+			preference2.setStatus(Boolean.TRUE);
 			preference2.setTypeOfPref("Cricket");
 			
 			Preference preference3 = new Preference();
 			preference3.setCategory("Games");
+			preference3.setStatus(Boolean.TRUE);
 			preference3.setTypeOfPref("Chess");
 			
 			preferenceRepo.save(preference);

@@ -20,7 +20,6 @@ public class UserProfile {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Min(5)
 	private Long id;
 	
 	private String name;

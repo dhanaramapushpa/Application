@@ -33,6 +33,11 @@ public class SuggestionDto {
 		this.email = email;
 	}
 
+	public SuggestionDto() {
+		super();
+	}
+
+	
 	
 	
 	
