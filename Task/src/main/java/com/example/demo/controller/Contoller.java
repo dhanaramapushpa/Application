@@ -42,12 +42,30 @@ public class Contoller {
 		return modelAndView;
 	}
 	
-	@RequestMapping("/suggestion")
-	public ModelAndView retrieve(@RequestParam String email) {
+	@RequestMapping("/suggestion-preferance")
+	public ModelAndView retrieveSuggestionsByPreferance(@RequestParam String email) {
 		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("suggestion");
 		Response response = suggestService.suggestByPref(email);
+		List<UserDto> userDto = new ArrayList<>();
+		if (response.getStatusCode() == 200){
+			userDto = (List<UserDto>) response.getResponseObject();
+			System.out.println("+++++++++++++++++"+userDto);
+			if (userDto.size() > 0) {
+				modelAndView.addObject("userDto", userDto);
+			}
+		}
+		return modelAndView;
+	}
+	
+	
+	@RequestMapping("/suggestion-address")
+	public ModelAndView retrieveSuggestionsByAddress(@RequestParam String email) {
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("suggestion");
+		Response response = suggestService.suggestByAddress(email);
 		List<UserDto> userDto = new ArrayList<>();
 		if (response.getStatusCode() == 200){
 			userDto = (List<UserDto>) response.getResponseObject();

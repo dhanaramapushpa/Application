@@ -32,15 +32,16 @@ public class SuggestServiceImpl implements SuggestService{
 	
 	@Override
 	public Response suggestByAddress(String email) {
-		Response response=null;
-		UserProfile userProfile=userRepository.findByEmail(email);
+		UserProfile userProfile=userRepository.findByEmail(email);//current user 
 		List<UserProfile> suggestedProfiles=new ArrayList<>();
-		List<UserAddress> userAddresses=userProfile.getUserAddress();
-		List<UserAddress> existingUserAddress=addressRepository.findAll();
-		for(UserAddress u1:userAddresses) {
+		List<UserAddress> userAddresses=userProfile.getUserAddress(); // current user addresses
+		List<UserAddress> existingUserAddress=addressRepository.findAll(); //existingUserAddress 
+		System.out.println("existingUserAddress"+existingUserAddress.size());
+		for(UserAddress u1:userAddresses) {  // current user addresses
 				if(u1.getIsPrimary()==true) {
-					for(UserAddress u:existingUserAddress) {
-						if(u1.getCity().equals(u.getCity())) {
+					System.out.println(">>>>");
+					for(UserAddress u:existingUserAddress) { //existingUserAddress 
+						if(!u.getUserProfile().equals(userProfile) && u1.getCity().equals(u.getCity())) {
 							if(u.getUserProfile().isPublicProfile()==true) {
 								suggestedProfiles.add(u.getUserProfile());
 							}
@@ -48,23 +49,12 @@ public class SuggestServiceImpl implements SuggestService{
 					}
 				}
 		}
-		List<SuggestionDto> suggestionDtos=new ArrayList<>();
-	for(UserProfile e:suggestedProfiles) {
-		if(userProfile.equals(e)) {
-			suggestedProfiles.remove(e);
-		}
-		else {
-			SuggestionDto suggestionDto=new SuggestionDto(e.getName(), e.getEmail());
-			suggestionDtos.add(suggestionDto);
-		}
-	}
-		return new Response("suggested Profiles",200,suggestionDtos);
+		return new Response("success",200,toSuggestionDto(suggestedProfiles));
 	}
 
 	@Override
 	public Response suggestByPref(String email) {
 		UserProfile userProfile=userRepository.findByEmail(email);
-		Response response=new Response();
 		List<UserProfile> suggestedUserProfiles=new ArrayList<>();
 		List<UserPreference> userPreferences=userPreferenceRepository.findByUserProfile(userProfile);
 		List<UserPreference> existingUserPreferences=userPreferenceRepository.findAll();
@@ -79,19 +69,13 @@ public class SuggestServiceImpl implements SuggestService{
 			} 
 		}
 		System.out.println(">>>"+suggestedUserProfiles.size());
-		for(UserProfile u:suggestedUserProfiles) {
-			if(userProfile.equals(u)) {
-				suggestedUserProfiles.remove(u);
-			}
-		}
-		response=new Response("success",500,toUserDto(suggestedUserProfiles));
-		return response;
+		return new Response("success",200,toSuggestionDto(suggestedUserProfiles));
 	}	
 	
-	public List<UserDto> toUserDto(List<UserProfile> suggestedUserProfiles) {
-		 List<UserDto> userDtos = new ArrayList<>();
+	public List<SuggestionDto> toSuggestionDto(List<UserProfile> suggestedUserProfiles) {
+		 List<SuggestionDto> userDtos = new ArrayList<>();
 		for (UserProfile user: suggestedUserProfiles) {
-			UserDto dto = new UserDto();
+			SuggestionDto dto = new SuggestionDto();
 			dto.setEmail(user.getEmail());
 			dto.setName(user.getName());
 			userDtos.add(dto);
